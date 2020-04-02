@@ -3,11 +3,11 @@
   <title>Aomine Blog</title>
   
   
-  <link href="/blog/atom.xml" rel="self"/>
+  <link href="/atom.xml" rel="self"/>
   
-  <link href="http://kuroko-tetsuya.gitee.io/blog/"/>
+  <link href="http://aomine/"/>
   <updated>2020-04-02T12:22:52.196Z</updated>
-  <id>http://kuroko-tetsuya.gitee.io/blog/</id>
+  <id>http://aomine/</id>
   
   <author>
     <name>Xuzhenya</name>
@@ -18,8 +18,8 @@
   
   <entry>
     <title>Spark</title>
-    <link href="http://kuroko-tetsuya.gitee.io/blog/2020/04/02/Spark/"/>
-    <id>http://kuroko-tetsuya.gitee.io/blog/2020/04/02/Spark/</id>
+    <link href="http://aomine/2020/04/02/Spark/"/>
+    <id>http://aomine/2020/04/02/Spark/</id>
     <published>2020-04-01T16:00:00.000Z</published>
     <updated>2020-04-02T12:22:52.196Z</updated>
     
@@ -32,7 +32,7 @@
     </summary>
     
     
-      <category term="大数据" scheme="http://kuroko-tetsuya.gitee.io/blog/categories/%E5%A4%A7%E6%95%B0%E6%8D%AE/"/>
+      <category term="大数据" scheme="http://aomine/categories/%E5%A4%A7%E6%95%B0%E6%8D%AE/"/>
     
     
   </entry>
