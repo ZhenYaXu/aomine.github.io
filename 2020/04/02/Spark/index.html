@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="spark 基本原理">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Spark">
+<meta property="og:url" content="http://yoursite.com/2020/04/02/Spark/index.html">
+<meta property="og:site_name" content="Aomine Blog">
+<meta property="og:description" content="spark 基本原理">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://ss1.bdstatic.com/70cFuXSh_Q1YnxGkpoWK1HF6hhy/it/u=1718602154,951680667&fm=26&gp=0.jpg">
+<meta property="article:published_time" content="2020-04-01T16:00:00.000Z">
+<meta property="article:modified_time" content="2020-04-02T12:22:52.196Z">
+<meta property="article:author" content="Xuzhenya">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://ss1.bdstatic.com/70cFuXSh_Q1YnxGkpoWK1HF6hhy/it/u=1718602154,951680667&fm=26&gp=0.jpg">
+
+<link rel="canonical" href="http://yoursite.com/2020/04/02/Spark/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>Spark | Aomine Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="Aomine Blog" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+	<a href="https://github.com/zhenyaxu" target="_blank" rel="noopener" class="github-corner" aria-label="View source on GitHub"><svg width="80" height="80" viewBox="0 0 250 250" style="fill:#151513; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Aomine Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/04/02/Spark/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://ss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=3274524693,3913214237&fm=11&gp=0.jpg">
+      <meta itemprop="name" content="Xuzhenya">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Aomine Blog">
+    </span>
+      <header class="post-header">
+		
+		  <i class="fa fa-thumbtack"></i>
+		
+        <h1 class="post-title" itemprop="name headline">
+          Spark
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2020-04-02 00:00:00 / 修改时间：20:22:52" itemprop="dateCreated datePublished" datetime="2020-04-02T00:00:00+08:00">2020-04-02</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%A4%A7%E6%95%B0%E6%8D%AE/" itemprop="url" rel="index"><span itemprop="name">大数据</span></a>
+                </span>
+            </span>
+
+          
+            <div class="post-description">spark 基本原理</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <div class="post-gallery" itemscope itemtype="http://schema.org/ImageGallery">
+            <img src="https://ss1.bdstatic.com/70cFuXSh_Q1YnxGkpoWK1HF6hhy/it/u=1718602154,951680667&fm=26&gp=0.jpg" itemprop="contentUrl">
+        </div>
+        <h1 id="基于-Wi-Fi-的室内定位系统"><a href="#基于-Wi-Fi-的室内定位系统" class="headerlink" title="基于 Wi-Fi 的室内定位系统"></a>基于 Wi-Fi 的室内定位系统</h1><p>本文档用于描述说明基于Wi-Fi的室内定位系统的设计，详细介绍室内定位技术的背景以及当今国内外研究现状，并具体介绍室内定位系统的总体设计以及各功能的实现细节，包括关键算法、实现中需要解决的关键问题以及解决方案。最终希望能够为相关从业者提供解决方案的思路。</p>
+<p>目前，随着国内外相关从业人员的研究，研究者们提出了众多室内定位技术的理论与方法。在此仅讨论基于 Wi-Fi 的室内定位技术。</p>
+<h3 id="WI-FI室内定位"><a href="#WI-FI室内定位" class="headerlink" title="WI-FI室内定位"></a>WI-FI室内定位</h3><p>近年来Wi-Fi技术飞速发展，城市中的公共场所如大型超市商场、学校、企业等都已经广泛部署Wi-Fi。Wi-Fi室内定位技术已经出现了很多具有代表性的研究成果，如RADAR系统、Nibble系统、Weyes系统等室内定位系统。2012年，Google把Wi-Fi室内定位和室内地图引入了谷歌地图中，一年内已经覆盖了北美和欧洲一万大家大型场馆。我国的百度、高德、四维、智慧图等公司也在研发Wi-Fi室内定位产品。由于Wi-Fi网络的普及，Wi-Fi定位是目前比较流行的定位技术，定位精度能达到米级，定位成本低，定位信号收发范围大，适用性强，可以被普及推广。</p>
+<p>采用基于 Wi-Fi 的室内定位方案，首先获取指定室内的结构图，然后在该结构图上进行打指纹 AP 点。什么是指纹 AP 点？</p>
+<p>【位置指纹法】：“位置指纹”把实际环境中的位置和某种“指纹”联系起来，一个位置对应一个独特的指纹。这个指纹可以是单维或多维的，比如待定位设备在接收或是发送信息，那么指纹可以是这个信息或信号的一个特征或多个特征（最常见的是信号强度）。如果待定位设备是在发送信号，有一些固定的接收设备感知贷定位设备的信号或信息然后根据这些检测到的特征来估计自身的位置，这种方式可称远程定位或者网络定位。如果是待定位设备接受一些固定的发送设备的信号或信息，然后根据这些检测到的特征来估计自身的位置，这种被称为自身定位。待定位移动设备也许会把它检测到的特征传达给网络中的服务器节点，服务器可以利用它所获得的所有信息来估计移动设备的位置，这种方式也成为混合定位，在所有的这些方式中，都需要把感知到的信号特征拿去匹配一个数据库中的信号特征，这个过程可以看作一个模式识别的问题。——选自《室内定位系列（一）——Wi-Fi位置指纹（译）》</p>
+<p>更多关于 Wi-Fi 位置指纹的内容可参考 <a href="https://blog.csdn.net/PINGER0077/article/details/79482208" target="_blank" rel="noopener">室内定位系列（一）——Wi-Fi位置指纹（译）</a></p>
+<p>微信小程序有专门获取 Wi-Fi 列表的 API，因此可以将 RSS（接收信号强度）来作为指纹 AP 的特征。RSS 不受信号带宽的影响，没必要高的带宽，是一个很受欢迎的信号特征。</p>
+<p>有了指纹 AP 点以及位置指纹法的概念，室内定位问题实际上就转换为一个多分类问题。服务方事先在室内结构图上确定 N 个指纹 AP 点，然后分别在这 N 个指纹 AP 点上采集 Wi-FI 的 RSS 数据。接着运用机器学习的方式训练，获得一个用以预测分类的模型。最终，模型可以通过接受客户发送当前位置的 RSS 数据，来判断用户当前所属的指纹 AP 点。</p>
+<h2 id="软件开发平台要求"><a href="#软件开发平台要求" class="headerlink" title="软件开发平台要求"></a>软件开发平台要求</h2><ul>
+<li>数据库管理系统：SQLite3</li>
+<li>微信小程序版本：API v2.7.0</li>
+<li>网络架构：完全支持 TCP/IP 协议</li>
+<li>开发工具或技术体系：为保证软件的上下兼容性，开发者应选择比较通用的开发工具的较新版本进行开发，如微信 web 开发者工具、pycharm、postman 等。</li>
+</ul>
+<h2 id="需求分析"><a href="#需求分析" class="headerlink" title="需求分析"></a>需求分析</h2><p>开发微信小程序“Wi-Fi室内定位”，用户可通过该微信小程序获取当前的室外定位，并判断用户是否已进入到指定的室内。当用户进入到室内时，微信小程序切换到室内，依据当前所处位置的 Wi-Fi 信息从而对用户的室内位置进行定位。</p>
+<h3 id="角色定义"><a href="#角色定义" class="headerlink" title="角色定义"></a>角色定义</h3><p>按照不同的使用对象，紧密围绕使用对象的工作范围、工作性质和工作内容进行角色划分。具体角色描述如下：</p>
+<ul>
+<li>系统管理员：对数据进行管理，并负责后台管理系统的维护和运行等工作。</li>
+<li>小程序使用者：使用微信小程序来获取室内定位。</li>
+</ul>
+<h3 id="系统功能"><a href="#系统功能" class="headerlink" title="系统功能"></a>系统功能</h3><p><strong>一．系统管理员</strong>：</p>
+<ol>
+<li>数据采集：系统管理员可以采集指定 AP 点Wi-Fi数据，并上传到服务器数据库中。</li>
+<li>模型训练：系统管理员可以训练指定室内模型。</li>
+<li>模型预测：系统管理员可以调用指定室内模型来进行位置预测。</li>
+<li>室内定点：系统管理员可以在地图上设置室内坐标点，并绘制室内结构图，以及在室内结构图上标注 AP 指纹点。</li>
+<li>系统管理：系统管理员拥有后台管理系统权限，可以对已有的数据进行增删改操作，创建后台用户并赋予对应的权限。</li>
+</ol>
+<p><strong>二．小程序使用者</strong>：</p>
+<ol>
+<li>获取室外定位：用户可以获取当前所在的室外位置。</li>
+<li>获取室内定位：当用户进入到指定室内时，可随时获取当前所处的室内位置。</li>
+</ol>
+<h2 id="具体实现"><a href="#具体实现" class="headerlink" title="具体实现"></a>具体实现</h2><p>首先，我们需要拥有一张室内结构图。</p>
+<p><img src="https://s2.ax1x.com/2019/06/04/VY4y5T.jpg" alt="室内结构图.jpg"></p>
+<p>然后，我们在需要的位置上打点，也就是标注指纹 AP 点。标注完指纹 AP 点之后，我们依次到刚才标注的指纹 AP 点上进行 Wi-Fi 信号强度采集。微信小程序有相应的获取 Wi-Fi 列表的接口，并且已经对 RSS 进行处理，因此我们无需再对 RSS 进行调整即可直接使用。</p>
+<p><img src="https://s2.ax1x.com/2019/06/04/VY4HPO.png" alt="Wi-Fi列表.png"></p>
+<p>我们依次将各指纹 AP 点采集到的 Wi-Fi 信息存储到服务器的数据库中。</p>
+<p><img src="https://s2.ax1x.com/2019/06/04/VY5noV.png" alt="数据库存储形式.png"></p>
+<p>Wi-Fi 信息存储在数据库中的形式与我们真正训练所需的形式有一定的差别。因此，我们需要通过转换操作，将存储在数据库中的数据转换成训练所需的数据形式。</p>
+<p><img src="https://s2.ax1x.com/2019/06/04/VY58y9.png" alt="数据形式对比.png"></p>
+<p>【实现代码】：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">drop_signal_data</span><span class="params">(dataset)</span>:</span></span><br><span class="line">    ap_dict = &#123;&#125;</span><br><span class="line">    <span class="keyword">for</span> data <span class="keyword">in</span> dataset:</span><br><span class="line">        bssid = data[<span class="number">0</span>]</span><br><span class="line">        <span class="keyword">if</span> bssid <span class="keyword">not</span> <span class="keyword">in</span> ap_dict:</span><br><span class="line">            ap_dict[bssid] = []</span><br><span class="line">        ap_dict[bssid].append((data[<span class="number">1</span>], data[<span class="number">2</span>]))</span><br><span class="line"></span><br><span class="line">    ap_count_list = []</span><br><span class="line">    <span class="keyword">for</span> ap <span class="keyword">in</span> ap_dict:</span><br><span class="line">        ap_count_list.append(len(ap_dict[ap]))</span><br><span class="line">    data_count = np.max(ap_count_list)</span><br><span class="line"></span><br><span class="line">    ap_result = &#123;&#125;</span><br><span class="line">    <span class="keyword">for</span> ap <span class="keyword">in</span> ap_dict:</span><br><span class="line">        <span class="keyword">if</span> len(ap_dict[ap]) == data_count:</span><br><span class="line">            ap_result[ap] = ap_dict[ap]</span><br><span class="line">    <span class="keyword">return</span> ap_result, data_count</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">record2trainSet</span><span class="params">(ap_data, data_count)</span>:</span></span><br><span class="line">    matrix = np.zeros((data_count, len(ap_data) + <span class="number">1</span>))</span><br><span class="line">    ind, feature_dict = <span class="number">0</span>, &#123;&#125;</span><br><span class="line">    <span class="keyword">for</span> ap <span class="keyword">in</span> ap_data:</span><br><span class="line">        feature_dict[ind] = ap</span><br><span class="line">        <span class="keyword">if</span> ind == <span class="number">0</span>:</span><br><span class="line">            matrix[:, <span class="number">-1</span>] = [data[<span class="number">1</span>] <span class="keyword">for</span> data <span class="keyword">in</span> ap_data[ap]]</span><br><span class="line">        matrix[:, ind] = [data[<span class="number">0</span>] <span class="keyword">for</span> data <span class="keyword">in</span> ap_data[ap]]</span><br><span class="line">        ind += <span class="number">1</span></span><br><span class="line">    <span class="keyword">return</span> matrix, feature_dict</span><br></pre></td></tr></table></figure>
+
+<h3 id="特征选择"><a href="#特征选择" class="headerlink" title="特征选择"></a>特征选择</h3><p>转换后的矩阵每一列为一个特定的 WiFi（后文以 BSSID 指代），现在我们的工作就是进行特征选择，挑选合适的特征。</p>
+<p>需要注意的是，不同指纹 AP 点采集到的 BSSID 可能有所不同，因此我们取当前室内所有指纹 AP 点的 BSSID 交集，以确保在后续操作中每个指纹 AP 点的特征集都是相同的。</p>
+<p>那么如何进行特征选择呢？最简单的做法就是判断每一个 BSSID 的方差，首先保证每一个 BSSID 在同一个指纹 AP 点的方差足够小，为什么？若 BSSID 在当前指纹 AP 点采集到的所有信号强度都是恒定不变，则表明该指纹 AP 点的 BSSID 很稳定，不会随着时间的变化而产生很大的抖动。接着，每一个 BSSID 在不同指纹 AP 点的方差足够大，这又是为什么？若 BSSID 在不同指纹 AP 点采集到的信号强度变化很大，则该 BSSID 对这些指纹 AP 点的区分程度也就越明显。例如在 A 点的信号强度为 30，B 点的信号强度为 60，此时用户接收到该 BSSID 的信号强度为 56，则可以很轻易地判断用户处在 B 点。基于上述考量，我们可以采用方差选择法来进行特征选择。</p>
+<p>当然，除了方差选择法，我们还可以通过卡方检验、互信息、相关系数法等过滤式特征选择方法。若对训练的开销和时间的要求不高，则可以采用递归特征消除以及基于树模型的特征选择。我们可以使用 sklearn 的相应代码来进行特征选择，具体的知识可以参考：</p>
+<ul>
+<li>特征选择-过滤式：<a href="https://blog.csdn.net/weixin_43378396/article/details/90649064" target="_blank" rel="noopener">传送门</a></li>
+<li>特征选择-包裹式：<a href="https://blog.csdn.net/weixin_43378396/article/details/90647321" target="_blank" rel="noopener">传送门</a></li>
+<li>特征选择-嵌入式：<a href="https://blog.csdn.net/weixin_43378396/article/details/90640595" target="_blank" rel="noopener">传送门</a></li>
+</ul>
+<p>确定了特征选择方案后，需要考虑特征选择的个数。考虑到不同地点的 BSSID 数量不同，因此我们需要视情况来选择特征数量。</p>
+<ul>
+<li>当 BSSID 较多时，我们也可以多选几个特征，这样能充分挖掘数据集中的信息；</li>
+<li>当 BSSID 较少时，则至少选择 5 个特征。若少于 5 个 BSSID，则无需做特征选择。</li>
+</ul>
+<p>最后将选择的特征存储到数据库指定表即可。</p>
+<h3 id="模型训练"><a href="#模型训练" class="headerlink" title="模型训练"></a>模型训练</h3><p>对于室内而言，Wi-Fi 分散在四周，例如东西两个 Wi-Fi，当用户从东走向西，则一个信号强度增加，另一个信号强度减弱，因此可以初步判断数据集应该是线性不可分，那么我们在选择模型时可以不用考虑线性分类模型。</p>
+<p>对于这一类侧重空间向量计算的分类问题，KNN 的效果一般会比较好，因此我们可以将 KNN 纳入考虑，同时再选择 SVM。经过测试数据的训练后，两者的效果相差不大，因此都可作为最终的模型。至于选择哪一个作为模型，则可从数据集大小的角度来进行度量。</p>
+<p>KNN 没有显式的训练过程，即使可以通过 K-D 树的方式减少计算量，但 K-D 树本身建立所需的时间以及存储开销都要比 SVM 大，因为 SVM 仅需要部分支持向量就可以进行预测工作。基于上述考虑，我的想法是当数据集过小时，直接使用 KNN 即可。若数据集较大时，则使用 SVM。</p>
+<p>【异常情况】：作为指纹 AP 的 WiFi 出现故障或位置发生移动，此时会出现获取不到相应 WiFi 的信号强度，或信号强度与学习时的信号强度差距较大。</p>
+<p>针对上述情况我们可以多设置几组指纹 AP，并分别为这几组指纹 AP 训练模型。当常用的指纹 AP 出现故障或位置发生移动时，系统能够自动调用其他指纹 AP 组。</p>
+<ul>
+<li>信号强度直接消失：这种情况比较容易处理，因为此时采集的当前位置的信号强度列表中不存在常用指纹 AP 组中的某一个 BSSID，我们只需要直接判断信号强度列表的 BSSID 列表是否包含数据库中存储的指纹 AP 列表即可，若不包含，则说明 WiFi 出现故障，此时就可以调用数据库中存储的备用指纹 AP 组。</li>
+<li>信号强度减弱：这种情况比较难处理，我们需要在采集数据的过程或者在模型训练过程中，确定指纹 AP 组中每个 BSSID 在各指纹 AP 点的信号强度。在每次预测前，先比对 BSSID 的信号强度是否发生较大的波动，如果波动较大，则说明该 BSSID 对应的 Wi-Fi 位置可能发生移动，或者信号受到阻隔，这会导致后续的预测不准确，因此可调用数据库中存储的备用指纹 AP 组。</li>
+</ul>
+<p>基于上述考虑，最好能够可以多确定几组指纹 AP 组，并训练几组模型，以备不时之需。</p>
+<p>完成模型训练后，我们可通过 sklearn.externals.joblib 包中的 dump 方法将模型缓存到服务器上，同时将模型在服务器上的位置存储到数据库中。</p>
+<h3 id="位置预测"><a href="#位置预测" class="headerlink" title="位置预测"></a>位置预测</h3><p>模型训练完成后，主要工作基本上已经完成。此时，只需要将用户当前位置的 Wi-Fi 信息经过处理后传递给服务器，服务器调用相应的模型进行预测，最终将预测结果返回即可。</p>
+<h2 id="效果展示"><a href="#效果展示" class="headerlink" title="效果展示"></a>效果展示</h2><p>软件测试以 505 寝室的室内定位作为案例。<br>首先，在 505 寝室内打 4 个指纹 AP 点，分别为四人的位置。接着，我们依次到 AP 点 1 号和 2 号处采集数据。</p>
+<p><img src="https://s2.ax1x.com/2019/06/04/VYo2RS.png" alt="效果图1.png"></p>
+<p>采集完数据后，点击训练按钮，等待一段时间直到训练完成的弹窗出现，同时下方信息栏的训练那一行也会出现“训练成功！”文字，标志着模型训练操作执行成功。然后，我们可以点击预测按钮来检验模型的训练成果。此时，我仍然站在 2 号位置处（因为刚刚在这采集数据），预测的结果如下图所示：</p>
+<p><img src="https://s2.ax1x.com/2019/06/04/VYogG8.png" alt="效果图2.png"></p>
+<p>接着，我们回退到室内页面，在该页面内每隔5s 会自动进行定位，当然我们可以自行设置定位时间间隔，不过在这次测试过程中我没有特意去修改时间间隔，使用的是默认设置的 5s。</p>
+<p>在 2 号位置等待 5s 后，定位图标从左上角移动到 2 号位置处（下方左图）。然后从 2 号位置走向 1 号位置，等待 5s 后，定位图标从 2 号位置移动到 1 号位置（下方右图）。</p>
+<p><img src="https://s2.ax1x.com/2019/06/04/VYocPf.png" alt="效果图3.png"></p>
+
+    </div>
+
+    
+    
+    
+	<div>
+      
+        
+<div class="my_post_copyright">
+  <script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
+  
+  <!-- JS库 sweetalert 可修改路径 -->
+  <script src="https://cdn.bootcss.com/jquery/2.0.0/jquery.min.js"></script>
+  <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+  <p><span>本文标题:</span><a href="/2020/04/02/Spark/">Spark</a></p>
+  <p><span>文章作者:</span><a href="/" title="访问 Xuzhenya 的个人博客">Xuzhenya</a></p>
+  <p><span>发布时间:</span>2020年04月02日 - 00:04</p>
+  <p><span>最后更新:</span>2020年04月02日 - 20:04</p>
+  <p><span>原始链接:</span><a href="/2020/04/02/Spark/" title="Spark">http://yoursite.com/2020/04/02/Spark/</a>
+    <span class="copy-path"  title="点击复制文章链接"><i class="fa fa-clipboard" data-clipboard-text="http://yoursite.com/2020/04/02/Spark/"  aria-label="复制成功！"></i></span>
+  </p>
+  <p><span>许可协议:</span><i class="fa fa-creative-commons"></i> 转载请保留原文链接及作者。</p>  
+</div>
+<script> 
+    var clipboard = new Clipboard('.fa-clipboard');
+    $(".fa-clipboard").click(function(){
+      clipboard.on('success', function(){
+        swal({   
+          title: "",   
+          text: '复制成功',
+          icon: "success", 
+          showConfirmButton: true
+          });
+    });
+    });  
+</script>
+
+      
+    </div>
+
+      <footer class="post-footer">
+
+        
+
+
+        
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#基于-Wi-Fi-的室内定位系统"><span class="nav-number">1.</span> <span class="nav-text">基于 Wi-Fi 的室内定位系统</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#WI-FI室内定位"><span class="nav-number">1.0.1.</span> <span class="nav-text">WI-FI室内定位</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#软件开发平台要求"><span class="nav-number">1.1.</span> <span class="nav-text">软件开发平台要求</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#需求分析"><span class="nav-number">1.2.</span> <span class="nav-text">需求分析</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#角色定义"><span class="nav-number">1.2.1.</span> <span class="nav-text">角色定义</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#系统功能"><span class="nav-number">1.2.2.</span> <span class="nav-text">系统功能</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#具体实现"><span class="nav-number">1.3.</span> <span class="nav-text">具体实现</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#特征选择"><span class="nav-number">1.3.1.</span> <span class="nav-text">特征选择</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#模型训练"><span class="nav-number">1.3.2.</span> <span class="nav-text">模型训练</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#位置预测"><span class="nav-number">1.3.3.</span> <span class="nav-text">位置预测</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#效果展示"><span class="nav-number">1.4.</span> <span class="nav-text">效果展示</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Xuzhenya"
+      src="https://ss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=3274524693,3913214237&fm=11&gp=0.jpg">
+  <p class="site-author-name" itemprop="name">Xuzhenya</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">1</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">1</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/zhenyaxu" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;zhenyaxu" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:xuzhenya1997@gmail.com" title="E-Mail → mailto:xuzhenya1997@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+	
+    <i class="fas fa-heart" style="color:black"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Xuzhenya</span>
+</div>
+
+<!--
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+-->
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
+<!-- 动态背景 -->
+<script type="text/javascript" src="//cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js"></script>
+<!-- 页面点击小红心 -->
+<script type="text/javascript" src="/js/src/clicklove.js"></script>
