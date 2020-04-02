@@ -3,7 +3,7 @@
   <title>Aomine Blog</title>
   
   
-  <link href="/atom.xml" rel="self"/>
+  <link href="/blog/atom.xml" rel="self"/>
   
   <link href="http://kuroko-tetsuya.gitee.io/blog/"/>
   <updated>2020-04-02T12:22:52.196Z</updated>
